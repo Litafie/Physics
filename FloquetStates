@@ -1,0 +1,95 @@
+from numpy import sqrt
+import numpy as np
+from scipy.linalg import eig
+import cmath
+import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+from matplotlib.ticker import FormatStrFormatter
+%config InlineBackend.figure_format = 'svg'
+
+def is_unitary(a):
+    return np.allclose(a @ a.conj().T, np.eye(a.shape[0]))
+
+def delta(x, y):
+    if x == y:
+        return 1.0
+    else:
+        return 0.0
+
+amp = 24.0
+num = 60
+damp = 1.0
+n = 10
+coup = 1.0
+pi = 4.0 * np.arctan(1.0)
+mbrill = 1
+omega = 20.0
+tw0 = (2.0 * pi) / omega
+unit = complex(0.0,1.0)
+div = 100.0
+dt = tw0 / div
+ndiv = int(div)
+n1 = n + 1
+BB = np.zeros(n1+1)
+amp_range = [damp * jn for jn in range(1, num + 1)]
+quasi_energies = []
+
+for i in range(n1):
+    BB[i] = -coup * np.sqrt(float((i)*(n+1-(i))))
+
+T = np.zeros((n1, n1), dtype=complex)
+for i in range(n1):
+    for j in range(n1):
+        T[i][j] = (delta(i+1,j+2)*BB[j+1] if j+1 < n1 else 0) + (delta(i+1,j)*BB[i+1] if i+1 < n1 else 0)
+
+eigvals, eigvecs = np.linalg.eig(T)
+U_diag = np.diag(np.exp(-1j * dt * eigvals))
+U = eigvecs @ U_diag @ eigvecs.conj().T
+
+gg = 0.0
+AA = np.zeros(n1)
+for i in range(n1):
+    AA[i] = 0.5 * gg * float(((n-i)**2 + (i)**2 - n))
+
+print(AA)
+quasi_energies = []
+for amp in amp_range:
+    F = np.eye(n1)
+    for m in range(ndiv):
+        t = float(m) * dt
+        fu = amp * np.cos(omega * t)
+        AA2 = np.array([fu * float(n1-2*i) for i in range(n1)], dtype=float)
+        AA_updated = AA + AA2
+        u = np.diag(np.exp(-1j * dt * AA_updated))
+
+        # Aplicación de los operadores U y u
+        F_temp = U @ F
+        F_temp = u @ F_temp
+
+        # Normalización de F para asegurar su carácter unitario
+        F = F_temp
+
+    eigvals, _ = np.linalg.eig(F)
+    quasi_energies_sorted = np.sort(np.angle(eigvals) / tw0)
+    quasi_energies.append(-quasi_energies_sorted)
+print(AA2)
+print(u)
+# Verificación de la propiedad unitaria de F
+if not is_unitary(F):
+    print("Warning: F is not unitary!")
+else:
+    print("F is unitary.")
+
+# Grafic0do de las cuasienergías
+for i in range(n1):
+    plt.plot(np.array(amp_range)/10.0, [e[i] for e in quasi_energies])
+
+plt.title('Espectro de Quasienergías de Floquet')
+plt.xlabel(r'$\frac{A}{\omega}$')
+plt.ylabel('Quasienergías (Q)')
+plt.grid(True)
+plt.savefig("espectro_quasienergias_floquet.svg")
+
+plt.show()
+
+
