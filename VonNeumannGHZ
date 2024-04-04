@@ -1,0 +1,21 @@
+
+def von_neumann_entropy(rho):
+    eigenvalues = np.linalg.eigvalsh(rho)
+    eigenvalues = eigenvalues[eigenvalues > 0]
+    entropy = -np.sum(eigenvalues * np.log2(eigenvalues))
+    return entropy
+
+
+GHZ_state = np.array([1, 0, 0, 0, 0, 0, 0, 1]) / np.sqrt(2)
+rho_GHZ = np.outer(GHZ_state, GHZ_state.conj())  
+
+
+rho_reduced_GHZ = 0.5 * np.array([[1, 0, 0, 0],
+                                  [0, 0, 0, 0],
+                                  [0, 0, 0, 0],
+                                  [0, 0, 0, 1]])
+
+
+S_reduced_GHZ = von_neumann_entropy(rho_reduced_GHZ)
+
+S_reduced_GHZ
