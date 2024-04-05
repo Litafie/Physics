@@ -1,0 +1,22 @@
+import numpy as np
+
+# Definimos las matrices para los generadores de boosts K
+K1 = np.array([[0, 1, 0, 0], [1, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]])
+K2 = np.array([[0, 0, 1, 0], [0, 0, 0, 0], [1, 0, 0, 0], [0, 0, 0, 0]])
+K3 = np.array([[0, 0, 0, 1], [0, 0, 0, 0], [0, 0, 0, 0], [1, 0, 0, 0]])
+
+
+# Calculamos los conmutadores
+com_K1_K2 = np.dot(K1, K2) - np.dot(K2, K1)
+com_K1_K3 = np.dot(K1, K3) - np.dot(K3, K1)
+com_K2_K3 = np.dot(K2, K3) - np.dot(K3, K2)
+
+
+# Organizamos los resultados en un diccionario para facilitar la presentación
+conmutadores = {
+    '[K1, K2]': com_K1_K2,
+    '[K1, K3]': com_K1_K3,
+    '[K2, K3]': com_K2_K3
+}
+
+conmutadores
