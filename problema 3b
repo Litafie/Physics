@@ -1,0 +1,28 @@
+from sympy import symbols, I, Matrix
+
+# Definimos las matrices de Pauli
+sigma_1 = Matrix([[0, 1], [1, 0]])
+sigma_2 = Matrix([[0, -I], [I, 0]])
+sigma_3 = Matrix([[1, 0], [0, -1]])
+
+# Generadores del álgebra de Lie para SO(3,1)
+J1 = sigma_1 / 2
+J2 = sigma_2 / 2
+J3 = sigma_3 / 2
+K1 = I * sigma_1 / 2
+K2 = I * sigma_2 / 2
+K3 = I * sigma_3 / 2
+
+# Cálculo de los conmutadores
+com_J1_J2 = J1 * J2 - J2 * J1
+com_J1_J3 = J1 * J3 - J3 * J1
+com_J2_J3 = J2 * J3 - J3 * J2
+com_K1_K2 = K1 * K2 - K2 * K1
+com_K1_K3 = K1 * K3 - K3 * K1
+com_K2_K3 = K2 * K3 - K3 * K2
+com_J1_K1 = J1 * K1 - K1 * J1
+com_J2_K2 = J2 * K2 - K2 * J2
+com_J3_K3 = J3 * K3 - K3 * J3
+
+# Mostrar los resultados
+com_J1_J2, com_J1_J3, com_J2_J3, com_K1_K2, com_K1_K3, com_K2_K3, com_J1_K1, com_J2_K2, com_J3_K3
