@@ -1,0 +1,41 @@
+
+K1_new = 1j * L1 / 2
+K2_new = 1j * L2 / 2
+K3_new = 1j * L3 / 2
+L1_new = L1 / 2
+L2_new = L2 / 2
+L3_new = L3 / 2
+
+# Calculamos los conmutadores con las nuevas definiciones
+com_K1new_K2new = np.dot(K1_new, K2_new) - np.dot(K2_new, K1_new)
+com_K1new_K3new = np.dot(K1_new, K3_new) - np.dot(K3_new, K1_new)
+com_K2new_K3new = np.dot(K2_new, K3_new) - np.dot(K3_new, K2_new)
+
+com_L1new_L2new = np.dot(L1_new, L2_new) - np.dot(L2_new, L1_new)
+com_L1new_L3new = np.dot(L1_new, L3_new) - np.dot(L3_new, L1_new)
+com_L2new_L3new = np.dot(L2_new, L3_new) - np.dot(L3_new, L2_new)
+
+com_L1new_K1new = np.dot(L1_new, K1_new) - np.dot(K1_new, L1_new)
+com_L2new_K2new = np.dot(L2_new, K2_new) - np.dot(K2_new, L2_new)
+com_L3new_K3new = np.dot(L3_new, K3_new) - np.dot(K3_new, L3_new)
+
+conmutadores_nuevos = {
+    '[K1_new, K2_new]': com_K1new_K2new,
+    '[K1_new, K3_new]': com_K1new_K3new,
+    '[K2_new, K3_new]': com_K2new_K3new,
+    '[L1_new, L2_new]': com_L1new_L2new,
+    '[L1_new, L3_new]': com_L1new_L3new,
+    '[L2_new, L3_new]': com_L2new_L3new,
+    '[L1_new, K1_new]': com_L1new_K1new,
+    '[L2_new, K2_new]': com_L2new_K2new,
+    '[L3_new, K3_new]': com_L3new_K3new
+}
+
+
+for key, matrix in conmutadores_nuevos.items():
+    conmutadores_nuevos[key] = np.array([[np.round(np.abs(matrix[i, j]), 10) * 
+                                          (np.round(np.angle(matrix[i, j]), 10) if np.abs(matrix[i, j]) != 0 else 1)
+                                          for j in range(matrix.shape[1])] 
+                                          for i in range(matrix.shape[0])])
+
+conmutadores_nuevos
